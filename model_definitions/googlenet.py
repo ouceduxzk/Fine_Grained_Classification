@@ -19,6 +19,7 @@ from lasagne.layers import LocalResponseNormalization2DLayer as LRNLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.layers import set_all_param_values
 
+root = '/home/zaikun/scratch/kaggle/nn/car/'
 def build_inception_module(name, input_layer, nfilters):
     # nfilters: (pool_proj, 1x1, 3x3_reduce, 3x3, 5x5_reduce, 5x5)
     net = {}
@@ -100,8 +101,8 @@ def build_model():
 
     net['pool5/7x7_s1'] = GlobalPoolLayer(net['inception_5b/output'])
     import pickle
-    model = pickle.load(open('../models/blvc_googlenet.pkl'))
-    set_all_param_values(net['pool5/7x7_s1'], model['values'])
+    model = pickle.load(open(root + 'models/blvc_googlenet.pkl'))
+    set_all_param_values(net['pool5/7x7_s1'], model['param values'][:114])    
     net['loss3/classifier'] = DenseLayer(net['pool5/7x7_s1'],
                                          num_units=196,
                                          nonlinearity=linear)
