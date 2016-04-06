@@ -1,28 +1,7 @@
 import numpy as np
-import importlib
 import sys
 import cPickle
-from vgg import * 
-from skimage.filters import sobel
-
-def set_weights(net,model_file):
-    '''
-    Sets the parameters of the model using the weights stored in model_file
-    Parameters
-    ----------
-    net: a Lasagne layer
-    model_file: string
-        path to the model that containes the weights
-    Returns
-    -------
-    None
-    '''
-    with open(model_file) as f:
-        print('Load pretrained weights from %s...' % model_file)
-        model = cPickle.load(f)
-
-    print('Set the weights...')
-    net.load_params_from(model)
+from util import * 
 
 def load_train_data():
     train = np.load('car_train.npy') #np.memmap('data/X_train.npy', mode = 'r', shape = (7475,30, 192,192))
@@ -32,10 +11,6 @@ def load_train_data():
     print('train shape {}'.format(train.shape))
     return train, y_train
 
-def load_model(fname):
-    model = importlib.import_module('model_definitions.{}'.format(fname))
-    return model
-
 def split_data(X, y, split_ratio=0.2):
     split = int(X.shape[0] * split_ratio)
     X_test = X[:split, :, :, :]
@@ -43,7 +18,6 @@ def split_data(X, y, split_ratio=0.2):
     X_train = X[split:, :, :, :]
     y_train = y[split:, :]
     return X_train, y_train, X_test, y_test
-
 
 def train_lasagne(model_name):
     model = load_model(model_name)

@@ -10,12 +10,16 @@ train_files = [ f for f in train_files if f.endswith('jpg')]
 
 def getBox():
 	lines = open('celldata.dat', 'r').readlines()
+	label = []
 	img2box = defaultdict(list)  
 	for line in lines : 
 		tmp = line.strip().split()
 		box = tmp[:4]
-		box = [ float(x) for x in box]
+		box = [ int(math.floor(float(x))) for x in box]
 		img2box[tmp[5]] = box
+		label.append(int(tmp[4]))
+	label = np.array(label)
+	np.save('y_train.npy', label)
 	return img2box 
 
 
@@ -27,7 +31,6 @@ def image_resize(image, basewidth, img2box):
 	w, h = img.size
 
 	#img = np.asarray(img.getdata(),dtype=np.float32).reshape((img.size[0],img.size[1])
-
 	# if w > h : 
 	# 	npad = ( (0,0), (w- h, 0))
 	# 	img = np.pad(img, npad, 'constant' )
@@ -50,4 +53,5 @@ def preproces():
 	print train.shape
 	np.save('car_train.npy', train)
 
+getBox()
 #image_resize(train_path + '00001.jpg', 224)
