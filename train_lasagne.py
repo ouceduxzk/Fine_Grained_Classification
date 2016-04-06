@@ -10,7 +10,13 @@ def load_train_data():
     train = train[:, np.newaxis, :,:].astype(np.float32)
     y_train = np.array(y_train, dtype = np.int32)
     print('train shape {}'.format(train.shape))
-    return train, y_train
+    return train/255.0, y_train
+
+def load_test_data():
+    test = np.load('car_test.npy')
+    test.astype(np.float32)
+    test = test/255.0
+    return test
 
 def split_data(X, y, split_ratio=0.2):
     split = int(X.shape[0] * split_ratio)
@@ -29,6 +35,8 @@ def train_lasagne():
 
 def test():
     model = build_model()
+    net = model.model
+    net.initialize()
     set_weights(net, 'models/res_april6.pkl')
     #net.predict_proba(X_test)
     X_test = load_test()
