@@ -18,6 +18,46 @@ from lasagne.layers import MaxPool2DLayer as PoolLayer
 from lasagne.layers import LocalResponseNormalization2DLayer as LRNLayer
 from lasagne.nonlinearities import softmax, linear
 from lasagne.layers import set_all_param_values
+from utils.nolearn_net import NeuralNet
+from nolearn.lasagne.handlers import SaveWeights
+
+# from nolearn_utils.iterators import (
+#     ShuffleBatchIteratorMixin,
+#     BufferedBatchIteratorMixin,
+#     RandomCropBatchIteratorMixin,
+#     RandomFlipBatchIteratorMixin,
+#     AffineTransformBatchIteratorMixin,
+#     AdjustGammaBatchIteratorMixin,
+#     make_iterator
+# )
+
+from nolearn_utils.hooks import (
+    SaveTrainingHistory,
+    PlotTrainingHistory,
+    EarlyStopping,
+    StepDecay
+)
+#from nolearn.lasagne import TrainSplit
+from utils import TrainSplit
+from utils.layer_macros import conv2dbn
+from utils.layer_macros import residual_block3_localbn as residual_block
+from utils.customer import * 
+
+def float32(k):
+    return np.cast['float32'](k)
+
+model_fname = './models/gnet_ap4.pkl'
+model_history_fname = './models/gnet_history.pkl'
+model_graph_fname = './models/gnet_plot.png'
+
+image_size = 224
+batch_size = 32
+
+save_weights = SaveWeights(model_fname, only_best=True, pickle=False)
+save_training_history = SaveTrainingHistory(model_history_fname)
+plot_training_history = PlotTrainingHistory(model_graph_fname)
+early_stopping = EarlyStopping(patience=10)
+
 
 root = '/home/zaikun/scratch/kaggle/nn/car/'
 def build_inception_module(name, input_layer, nfilters):
@@ -109,7 +149,28 @@ def build_model():
     net['prob'] = NonlinearityLayer(net['loss3/classifier'],
                                     nonlinearity=softmax)
 
-    return net
+    model = NeuralNet(
+        layers=net['prob'],
+        #use_label_encoder=False,
+        objective_l2=1e-4, #1e-3
+        update=nn.updates.adam,
+        #update_learning_rate=1e-4,
+        # update=nn.updates.nesterov_momentum,
+        update_learning_rate=theano.shared(float32(1e-4)), # 1e-4
+        train_split=TrainSplit(0.2, random_state=42, stratify=False),
+        batch_iterator_train=train_iterator,
+        batch_iterator_test=test_iterator,
+        on_epoch_finished=[
+            save_weights,
+            save_training_history,
+            plot_training_history,
+            early_stopping,
+            StepDecay('update_learning_rate', start=1e-4, stop=5e-6)
+        ],
+        verbose=1,
+        max_epochs=1000,
+        #custom_score = ('CRPS', CRPS)
+    )
 
+    return model
 
-build_model()
