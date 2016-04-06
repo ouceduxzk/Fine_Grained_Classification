@@ -154,7 +154,6 @@ def build_model():
     model = NeuralNet(
         layers=net['prob'],
         #use_label_encoder=False,
-        num_classes = 196,
         objective_l2=1e-4, #1e-3
         update=lasagne.updates.adam,
         #update_learning_rate=1e-4,
@@ -176,4 +175,3 @@ def build_model():
     )
 
     return model
-build_model()

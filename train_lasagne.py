@@ -31,7 +31,7 @@ def train_lasagne():
     #set_weights(net, 'models/res_march29.pkl')
     print('Loading training data...')
     X_train,  y_train = load_train_data()
-    net.fit(X_train, y_train )
+    model.fit(X_train, y_train )
 
 def test():
     model = build_model()
