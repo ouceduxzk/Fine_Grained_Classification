@@ -6,7 +6,8 @@
 
 # Download pretrained weights from:
 # https://s3.amazonaws.com/lasagne/recipes/pretrained/imagenet/blvc_googlenet.pkl
-
+import sys
+sys.path.insert(0, '/home/zaikun/scratch/kaggle/nn/statefarm/scripts/')
 from lasagne.layers import InputLayer
 from lasagne.layers import DenseLayer
 from lasagne.layers import ConcatLayer
@@ -20,7 +21,8 @@ from lasagne.nonlinearities import softmax, linear
 from lasagne.layers import set_all_param_values
 from utils.nolearn_net import NeuralNet
 from nolearn.lasagne.handlers import SaveWeights
-
+import lasagne 
+import theano
 # from nolearn_utils.iterators import (
 #     ShuffleBatchIteratorMixin,
 #     BufferedBatchIteratorMixin,
@@ -152,14 +154,15 @@ def build_model():
     model = NeuralNet(
         layers=net['prob'],
         #use_label_encoder=False,
+        num_classes = 196,
         objective_l2=1e-4, #1e-3
-        update=nn.updates.adam,
+        update=lasagne.updates.adam,
         #update_learning_rate=1e-4,
         # update=nn.updates.nesterov_momentum,
         update_learning_rate=theano.shared(float32(1e-4)), # 1e-4
         train_split=TrainSplit(0.2, random_state=42, stratify=False),
-        batch_iterator_train=train_iterator,
-        batch_iterator_test=test_iterator,
+        #batch_iterator_train=train_iterator,
+        #batch_iterator_test=test_iterator,
         on_epoch_finished=[
             save_weights,
             save_training_history,
@@ -173,4 +176,4 @@ def build_model():
     )
 
     return model
-
+build_model()
