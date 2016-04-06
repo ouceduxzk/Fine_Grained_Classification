@@ -2,7 +2,7 @@ import numpy as np
 import os
 from PIL import Image
 from collections import defaultdict
-
+import math
 #from skimage.filters import sobel 
 train_path = './cars_train/'
 train_files = os.listdir(train_path)
@@ -24,12 +24,14 @@ def getBox():
 
 
 def image_resize(image, basewidth, img2box):
-	img = Image.open(image).convert('L')
-	box[:2] = box[:2] - 16
-	box[2:] = box[2:] + 16
-	img = Image.crop(img, img2box[image])
-	w, h = img.size
-
+        img = Image.open(image).convert('L')
+        box = img2box[os.path.basename(image)]
+        box[0] = box[0] - 16
+        box[1] = box[1] - 16
+        box[2] = box[2] + 16
+        box[3] = box[3] + 16
+        img = img.crop(tuple(box))
+        w, h = img.size
 	#img = np.asarray(img.getdata(),dtype=np.float32).reshape((img.size[0],img.size[1])
 	# if w > h : 
 	# 	npad = ( (0,0), (w- h, 0))
@@ -48,10 +50,9 @@ def preproces():
 	img2box = getBox()
 	train = np.zeros([len(train_files), 224,224])
 	for i,f in enumerate(train_files): 
-    	if i % 100==0 : print i
+    		if i % 100==0 : print i
 		train[i] = image_resize(train_path + train_files[i], 224, img2box)
 	print train.shape
 	np.save('car_train.npy', train)
 
-getBox()
 #image_resize(train_path + '00001.jpg', 224)
