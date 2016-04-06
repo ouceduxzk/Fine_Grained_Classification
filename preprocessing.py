@@ -6,7 +6,8 @@ train_path = './cars_train/'
 train_files = os.listdir(train_path)
 train_files = [ f for f in train_files if f.endswith('jpg')]
 
-def image_resize(image, basewidth):
+def preprocessing(image, basewidth):
+	
 	img = Image.open(image).convert('L')
 	img = np.asarray(img.getdata(),dtype=np.float32).reshape((img.size[0],img.size[1]))
 	#img = np.asarray(img)

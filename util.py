@@ -1,11 +1,6 @@
-import h5py
 import numpy as np
-from skimage.restoration import denoise_tv_chambolle
 from scipy import ndimage
-from keras.utils.generic_utils import Progbar
 import importlib
-
-
 
 def set_weights(net,model_file):
     '''
@@ -29,6 +24,7 @@ def set_weights(net,model_file):
 def load_model(fname):
     model = importlib.import_module('model_definitions.{}'.format(fname))
     return model
+
 
 def get_mean_pixel(data):
     mean_pixel = np.mean(data.reshape(data.shape[0], data.shape[1] * data.shape[2]), 1)
