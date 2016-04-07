@@ -58,7 +58,7 @@ batch_size = 32
 save_weights = SaveWeights(model_fname, only_best=True, pickle=False)
 save_training_history = SaveTrainingHistory(model_history_fname)
 plot_training_history = PlotTrainingHistory(model_graph_fname)
-early_stopping = EarlyStopping(patience=10)
+early_stopping = EarlyStopping(patience=20)
 
 
 root = '/home/zaikun/scratch/kaggle/nn/car/'
@@ -93,7 +93,7 @@ def build_inception_module(name, input_layer, nfilters):
 
 def build_model():
     net = {}
-    net['input'] = InputLayer((None, 3, None, None))
+    net['input'] = InputLayer((None, 3, image_size, image_size))
     net['conv1/7x7_s2'] = ConvLayer(
         net['input'], 64, 7, stride=2, pad=3, flip_filters=False)
     net['pool1/3x3_s2'] = PoolLayer(
@@ -154,12 +154,13 @@ def build_model():
     model = NeuralNet(
         layers=net['prob'],
         #use_label_encoder=False,
-        objective_l2=1e-4, #1e-3
-        update=lasagne.updates.adam,
+        #objective_l2=1e-4, #1e-3
+        #update=lasagne.updates.adam,
         #update_learning_rate=1e-4,
-        # update=nn.updates.nesterov_momentum,
-        update_learning_rate=theano.shared(float32(1e-4)), # 1e-4
-        train_split=TrainSplit(0.2, random_state=42, stratify=False),
+        update=lasagne.updates.nesterov_momentum,
+        update_momentum=0.9,
+        update_learning_rate=theano.shared(float32(0.03)), # 1e-4
+        train_split=TrainSplit(0.1, random_state=42, stratify=False),
         #batch_iterator_train=train_iterator,
         #batch_iterator_test=test_iterator,
         on_epoch_finished=[
@@ -167,10 +168,10 @@ def build_model():
             save_training_history,
             plot_training_history,
             early_stopping,
-            StepDecay('update_learning_rate', start=1e-4, stop=5e-6)
+            #StepDecay('update_learning_rate', start=1e-2, stop=1e-3)
         ],
         verbose=1,
-        max_epochs=1000,
+        max_epochs=200,
         #custom_score = ('CRPS', CRPS)
     )
 
