@@ -7,7 +7,7 @@ from model_definitions.googlenet import *
 def load_train_data():
     train = np.load('car_train.npy') #np.memmap('data/X_train.npy', mode = 'r', shape = (7475,30, 192,192))
     y_train = np.load('y_train.npy')
-    train = train[:, np.newaxis, :,:].astype(np.float32)
+    train = train.astype(np.float32)
     y_train = np.array(y_train, dtype = np.int32)
     print('train shape {}'.format(train.shape))
     return train/255.0, y_train
