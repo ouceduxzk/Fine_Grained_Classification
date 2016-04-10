@@ -6,7 +6,7 @@ Task : Classification of 196 classes of cars with less than 9k images for traini
 
 1. use pre-trained googlenet
 2. train with normal rates
-3. Achieved 85.9% top1 accuracy and 97% top5 acc with 7200iterations
+3. Achieved 87% top1 accuracy and 97% top5 acc with 10000 iterations
 
 
 Lessons learned : 
