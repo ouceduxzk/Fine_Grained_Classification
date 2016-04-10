@@ -5,5 +5,5 @@ Task : Classification of 196 classes of cars with less than 9k images for traini
 	Monza: Image Classification of Vehicle Make and Model Using Convolutional Neural Networks and Transfer Learning
 
 1. use pre-trained googlenet
-2. train with normal rates 
-3. goal to achieve 80% top1 accuracy 
+2. train with normal rates
+3. Achieved 84% top1 accuracy and 96% top5 acc with 5000iterations
