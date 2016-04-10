@@ -6,4 +6,11 @@ Task : Classification of 196 classes of cars with less than 9k images for traini
 
 1. use pre-trained googlenet
 2. train with normal rates
-3. Achieved 84% top1 accuracy and 96% top5 acc with 5000iterations
+3. Achieved 85.9% top1 accuracy and 97% top5 acc with 7200iterations
+
+
+Lessons learned : 
+
+	1.  Training from scratch is very hard with less data and more class.
+	2.  Bounding box of the car really helps
+	3.  fine tuning need to select a good lr and make the bottom layers learn slow, but the last few layers learn fast.
