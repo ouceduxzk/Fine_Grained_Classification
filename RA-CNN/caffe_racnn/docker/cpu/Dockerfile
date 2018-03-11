@@ -31,16 +31,16 @@ WORKDIR $CAFFE_ROOT
 # https://github.com/docker/hub-feedback/issues/460
 ENV CLONE_TAG=1.0
 
-RUN git clone -b ${CLONE_TAG} --depth 1 https://github.com/BVLC/caffe.git . && \
+RUN git clone https://github.com/ouceduxzk/Fine_Grained_Classification.git  && cd Fine_Grained_Classification && cd RA-CNN && cd caffe_racnn &&\
     pip install --upgrade pip && \
     cd python && for req in $(cat requirements.txt) pydot; do pip install $req; done && cd .. && \
     mkdir build && cd build && \
     cmake -DCPU_ONLY=1 .. && \
     make -j"$(nproc)"
 
-ENV PYCAFFE_ROOT $CAFFE_ROOT/python
+ENV PYCAFFE_ROOT $CAFFE_ROOT/Fine_Grained_Classification/RA_CNN/caffe_racnn/python
 ENV PYTHONPATH $PYCAFFE_ROOT:$PYTHONPATH
-ENV PATH $CAFFE_ROOT/build/tools:$PYCAFFE_ROOT:$PATH
+ENV PATH $CAFFE_ROOT/Fine_Grained_Classification/RA_CNN/caffe_racnn/build/tools:$PYCAFFE_ROOT:$PATH
 RUN echo "$CAFFE_ROOT/build/lib" >> /etc/ld.so.conf.d/caffe.conf && ldconfig
 
 WORKDIR /workspace
