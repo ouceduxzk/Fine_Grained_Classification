@@ -12,8 +12,7 @@ Steps to reproduce the paper：
 4. Alternative training of classification network and APN network (fixing the others lr to be 0) untile both of the nets converge.
 
 
-
-Problem needs to take care : 
-
-1. How to load the same weights into  three subnets with three differenet names of blobs (through python inferface)
-2. How to train the APN network with pool5 (512 max response numbers) to supervise learning (tx, ty, tl) ? 
+##Features 
+- [x] load the same weights into  three subnets with three differenet names of blobs (through python inferface, save the save weights into three sets of names)
+- [] Train the APN network with pool5 (512 max response numbers) to supervise learning (tx, ty, tl) 
+- [] Alternative training
