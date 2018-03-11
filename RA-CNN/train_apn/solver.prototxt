@@ -1,0 +1,15 @@
+net: "train_apn.prototxt"
+test_iter: 100
+test_interval: 400
+test_initialization: false
+display: 20
+base_lr: 0.01
+lr_policy: "step"
+stepsize: 10000
+gamma: 0.1
+max_iter: 50000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 1000
+snapshot_prefix: "models/pretrained_apn"
+solver_mode: GPU
