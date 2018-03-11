@@ -6,13 +6,14 @@ import layer_pb2
 from easydict import EasyDict as edict 
 import numpy as np 
 
-def network(label, prototxt = None):
+def network(label, prototxt = None, modelpath=None):
     caffe.set_mode_cpu()
+    import pdb; pdb.set_trace()
     base_dir = os.path.dirname(os.path.realpath(__file__)) + '/'
     models_dir = os.path.join(base_dir, 'models')
     arch_filepath = os.path.join(models_dir, '%s.prototxt' % label)
     weights_filepath = os.path.join(models_dir, '%s.caffemodel' % label)
-    net = caffe.Net(arch_filepath if prototxt is None else prototxt, weights_filepath, caffe.TEST)
+    net = caffe.Net(arch_filepath if prototxt is None else prototxt, weights_filepath if modelpath is None else modelpath, caffe.TEST)
     return net 
 
 def mkdir_p(path):
@@ -72,6 +73,7 @@ def surgery(label, prototxt1, prototxt2):
 
 def main(argv):
     #extract('VGG_ILSVRC_19_layers')
-    surgery('VGG_ILSVRC_19_layers', 'models/VGG_ILSVRC_19_layers.prototxt', 'models/surgery.prototxt')
+    #surgery('VGG_ILSVRC_19_layers', 'models/VGG_ILSVRC_19_layers.prototxt', 'models/surgery.prototxt')
+    net = network('s', './proto/deploy_fixcls.prototxt', 'racnn.caffemodel')
 if __name__ == '__main__':
     main(sys.argv)
