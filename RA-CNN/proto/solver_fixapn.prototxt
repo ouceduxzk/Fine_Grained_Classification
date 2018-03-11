@@ -11,5 +11,5 @@ max_iter: 50000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 1000
-snapshot_prefix: "models/racnn"
+snapshot_prefix: "models/racnn_cls"
 solver_mode: GPU
