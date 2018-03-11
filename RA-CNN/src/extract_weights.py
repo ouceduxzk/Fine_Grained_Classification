@@ -12,7 +12,7 @@ def network(label, prototxt = None):
     models_dir = os.path.join(base_dir, 'models')
     arch_filepath = os.path.join(models_dir, '%s.prototxt' % label)
     weights_filepath = os.path.join(models_dir, '%s.caffemodel' % label)
-    net = caffe.Net(arch_filepath is prototxt is None else prototxt, weights_filepath, caffe.TEST)
+    net = caffe.Net(arch_filepath if prototxt is None else prototxt, weights_filepath, caffe.TEST)
     return net 
 
 def mkdir_p(path):
@@ -61,15 +61,17 @@ def surgery(label, prototxt1, prototxt2):
     base_dir = os.path.dirname(os.path.realpath(__file__)) + '/'
     layer_dir = os.path.join(base_dir, 'layer', label)
     for layer_name in net_from.blobs:
-        net_to.params[layer_name + '_A'][0].data = net_from.params[layer_name][0].data[...]
-        net_to.params[layer_name + '_A'][1].data = net_from.params[layer_name][1].data[...]
-        net_to.params[layer_name + '_A_A'][0].data = net_from.params[layer_name][0].data[...]
-        net_to.params[layer_name + '_A_A'][1].data = net_from.params[layer_name][1].data[...]
+        if 'conv' not in layer_name : continue 
+	print(layer_name)
+        net_to.params[layer_name + '_A'][0].data[...] = net_from.params[layer_name][0].data[...]
+        net_to.params[layer_name + '_A'][1].data[...] = net_from.params[layer_name][1].data[...]
+        net_to.params[layer_name + '_A_A'][0].data[...] = net_from.params[layer_name][0].data[...]
+        net_to.params[layer_name + '_A_A'][1].data[...] = net_from.params[layer_name][1].data[...]
 
     net_to.save('racnn.caffemodel')
 
 def main(argv):
     #extract('VGG_ILSVRC_19_layers')
-    extract('VGG_ILSVRC_19_layers', 'models/VGG_ILSVRC_19_layers.prototxt', './proto/train_val_fixcls.prototxt')
+    surgery('VGG_ILSVRC_19_layers', 'models/VGG_ILSVRC_19_layers.prototxt', 'models/surgery.prototxt')
 if __name__ == '__main__':
     main(sys.argv)
