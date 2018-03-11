@@ -2,8 +2,7 @@ import sys
 import os
 import errno
 import caffe
-import proto.layer_pb2
-from network import network
+import layer_pb2
 from easydict import EasyDict as edict 
 import numpy as np 
 
@@ -33,7 +32,7 @@ def shape(arr):
 
 def save_layer(f, layer_name, weights, bias):
     print('Saving %s' % layer_name)
-    layer = proto.layer_pb2.Layer()
+    layer = layer_pb2.Layer()
     layer.name = layer_name
     layer.shape.d1, layer.shape.d2, layer.shape.d3, layer.shape.d4 = \
         shape(weights)
@@ -44,7 +43,7 @@ def save_layer(f, layer_name, weights, bias):
     f.write(layer.SerializeToString())
 
 
-def extract():
+def extract(label):
     net = network(label)
     base_dir = os.path.dirname(os.path.realpath(__file__)) + '/'
     layer_dir = os.path.join(base_dir, 'layer', label)
